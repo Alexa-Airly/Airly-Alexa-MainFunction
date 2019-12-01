@@ -3,6 +3,7 @@ language: shell
 
 stages:
   - name: Terraform run
+  - name: Perform tests
 
 services:
   - docker
@@ -44,3 +45,11 @@ jobs:
         - terraform validate
         - chmod +x execute.sh
         - ./execute.sh
+
+    - stage: Perform tests
+      script:
+        - echo "Check for commit ${TRAVIS_COMMIT} and tag ${TRAVIS_TAG} from branch ${TRAVIS_BRANCH}."
+        - echo "This is build number ${TRAVIS_BUILD_NUMBER}, for ${TRAVIS_REPO_SLUG}."
+        - mkdir /tmp/config-custom
+        - docker pull almerhor/pylint:default
+        - docker run --rm -v $(pwd):/pylint -v $(pwd)/test:/tmp/config-custom almerhor/pylint:default py/index.py requirements-custom.txt
