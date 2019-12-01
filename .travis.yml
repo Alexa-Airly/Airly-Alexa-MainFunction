@@ -93,3 +93,19 @@ jobs:
           bucket: "${artifact_bucket}"
           local_dir: artifact/package
           skip_cleanup: true
+        - provider: lambda
+          funtion_name: "index"
+          region: "${terraform_region}"
+          role: "arn:aws:iam::${account_number}:role/alexaairly/LambdaAlexaAirlyMainFunctionIamRole"
+          runtime: "python3.6"
+          module_name: "index"
+          handler_name: "handler"
+          description: "Alexa Airly - Main Function"
+          memory_size: 128
+          timeout: 5
+          zip: artifact/package/AirlyAlexaMainFunction.zip
+          environment: 
+            apikey=${airly_apikey}
+            apiurlbase=test
+            maxdistance=10
+            maxresults=1
