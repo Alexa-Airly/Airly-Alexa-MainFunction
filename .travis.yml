@@ -53,7 +53,7 @@ jobs:
         - echo "This is build number ${TRAVIS_BUILD_NUMBER}, for ${TRAVIS_REPO_SLUG}."
         - mkdir /tmp/config-custom
         - docker pull almerhor/pylint:default
-        - docker run --rm -v $(pwd):/pylint -v $(pwd)/test:/tmp/config-custom almerhor/pylint:default py/index.py requirements-custom.txt
+        - docker run --rm -v $(pwd):/pylint -v $(pwd)/test:/tmp/config-custom almerhor/pylint:default py/AirlyAlexaMainFunction.py requirements-custom.txt
 
     - stage: Perform tests
       os: linux
