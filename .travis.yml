@@ -105,7 +105,4 @@ jobs:
           timeout: 5
           zip: artifact/package/AirlyAlexaMainFunction.zip
           environment: 
-            - apikey=${airly_apikey}
-            - apiurlbase=test
-            - maxdistance=10
-            - maxresults=1
+            - LAMBDA_APIKEY=${airly_apikey}
