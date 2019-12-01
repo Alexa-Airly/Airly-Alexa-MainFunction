@@ -17,7 +17,7 @@ install:
   - mv /tmp/terraform ~/bin
   - export PATH="~/bin:$PATH"
 
-  jobs:
+jobs:
   include:
     - stage: Terraform run
       env:
