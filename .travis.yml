@@ -84,10 +84,7 @@ jobs:
         - chmod +x *.sh
         - ./env_prep.sh
         - cd ../..
-        - echo "Sent artifact to S3"
-        - ls -al
-        - ls -al artifact
-        - ls -al artifact/package
+        - echo "Send artifact to S3"
       deploy:
         - provider: s3
           bucket: "${artifact_bucket}"
@@ -106,3 +103,4 @@ jobs:
           zip: artifact/package/AirlyAlexaMainFunction.zip
           environment: 
             - LAMBDA_APIKEY="${airly_apikey}"
+            - LAMBDA_MAXRESULTS=1
