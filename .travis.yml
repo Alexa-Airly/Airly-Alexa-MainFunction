@@ -80,8 +80,8 @@ jobs:
           - chmod +x *.sh
           - ./env_prep.sh
           - echo "Sent artifact to S3"
-          deploy:
-            - provider: s3
-              bucket: "${artifact_bucket}"
-              local_dir: artifact/package
-              skip_cleanup: true
+        deploy:
+          - provider: s3
+            bucket: "${artifact_bucket}"
+            local_dir: artifact/package
+            skip_cleanup: true
