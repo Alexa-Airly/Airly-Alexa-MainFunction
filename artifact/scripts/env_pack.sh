@@ -1,4 +1,4 @@
 #! /bin/bash
-
+mkdir ../package
 cd ../airly/lib/python3.6/site-packages/
-zip -r ../../../../function.zip .
+zip -r ../../../../package/function.zip .

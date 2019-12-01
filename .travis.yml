@@ -4,6 +4,7 @@ language: shell
 stages:
   - name: Terraform run
   - name: Perform tests
+  - name: Prepare artifact
 
 services:
   - docker
@@ -53,3 +54,16 @@ jobs:
         - mkdir /tmp/config-custom
         - docker pull almerhor/pylint:default
         - docker run --rm -v $(pwd):/pylint -v $(pwd)/test:/tmp/config-custom almerhor/pylint:default py/index.py requirements-custom.txt
+
+    - stage: Prepare artifact
+        script:
+          - echo "Building package"
+          - cd scripts
+          - chmod +x *.sh
+          - ./env_prep.sh
+          - echo "Sent artifact to S3"
+          deploy:
+            - provider: s3
+              bucket: "${artifact_bucket}"
+              local_dir: artifact/package
+              skip_cleanup: true
