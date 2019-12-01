@@ -95,7 +95,7 @@ jobs:
           region: "${terraform_region}"
           role: "arn:aws:iam::${account_number}:role/alexaairly/LambdaAlexaAirlyMainFunctionIamRole"
           runtime: "python3.6"
-          module_name: "index"
+          module_name: "AirlyAlexaMainFunction"
           handler_name: "handler"
           description: "Alexa Airly - Main Function"
           memory_size: 128
