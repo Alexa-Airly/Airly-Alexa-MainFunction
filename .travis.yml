@@ -55,6 +55,24 @@ jobs:
         - docker pull almerhor/pylint:default
         - docker run --rm -v $(pwd):/pylint -v $(pwd)/test:/tmp/config-custom almerhor/pylint:default py/index.py requirements-custom.txt
 
+    - stage: Perform tests
+      os: linux
+      language: java
+      sudo: required
+      addons:
+        sonarcloud:
+          organization: "alexa-airly"
+          token: 
+            secure: "ql5Exbz16Z3E8Q/SYnMZrC/UDCnFcXm8RCPI81OeUVgetzPDdGoxJLUBA0jz2VlRgrnVet3Q9NRXnTMeVBxFRVuSrWHo+1/ycf1+98IFcHYGMAdL6EAEbEvNuSkseuGqzwi3eoDP1f6aB9ekwRdYdpiI4LKswMGpAKOxlv5dsm6okiSEfyV/lM4LCHEDSwB0v6q1thY2Cy1Yp4uOXSG+FEfjWodty+v7dNCgVDhIL2Yto+7xSkVAkacXInTvQ0AeqatRIZYYow4Qcxc5rHFO/y2vUIBfvupq6ZasGzynbXWjnlA/eGdl7HZ+692zHpR47OrzU/IWaenYy/eK9VMMzenS8uPkofyWIq82vz4DwG+PdU1URoryso5lP33qy+/VtopdtBDwYzFAMa7E3UDN2n4T3G+HsS7aN1ys4Wgi5HqYotrxm4HSuVp2R/4H4pWCOhVDq/zt4+hkWjmltAlDZXEJ3ZQzra5bJ8Nj1NxrXuK/jZ4x7HxRqAPmFudH2Z5vo/DNBRgfzdsAK+Kr9Po4MIH90i0Nmlsljdt3c7OTtBBKs29R2Kv3SgqF7DsySuIGxLNCccj/Ipp8nqSbGQMYnQfKFWHQ9b9HfgpFqUkLvjPcGyXVz+aLnslQcaoxbmMgXOK0uXHzsOZtFsuq5sMgX51yswlotqLDx4SdQDfQZdY="
+      
+      jdk:
+        - oraclejdk8
+
+      script:
+        - sudo chmod +x $(which sonar-scanner)
+        - export PATH=$(dirname $(which sonar-scanner)):$PATH
+        - sonar-scanner
+
     - stage: Prepare artifact
         script:
           - echo "Building package"
