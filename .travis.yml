@@ -76,7 +76,7 @@ jobs:
     - stage: Prepare artifact
       script:
         - echo "Building package"
-        - cd scripts
+        - cd artifacts/scripts
         - chmod +x *.sh
         - ./env_prep.sh
         - echo "Sent artifact to S3"
