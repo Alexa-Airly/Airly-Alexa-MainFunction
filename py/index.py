@@ -29,10 +29,10 @@ from ask_sdk_model import (
 from ask_sdk_model.slu.entityresolution import StatusCode
 
 """ Global parameters """
-apikey = os.environ.get('APIKEY')
-apiurlbase = os.environ.get('APIURLBASE')
-maxdistance = os.environ.get('MAXDISTANCE')
-maxresults = os.environ.get('MAXRESULTS')
+apikey = os.environ.get('apikey')
+apiurlbase = os.environ.get('apiurlbase')
+maxdistance = os.environ.get('maxdistance')
+maxresults = os.environ.get('maxresults')
 
 pollutants = [
     {'name': 'PM10', 'type': 'PM10', 'symbol': '\u2B1B'},
@@ -53,7 +53,7 @@ locationlng = '19.940984'
 
 sb = SkillBuilder()
 
-def callAPI(apikey, params):
+def callapi(apikey, params):
     headers = {
         'content-type': 'application/json',
         'apikey': apikey
@@ -264,13 +264,14 @@ class CompletedStatusIntentHandler(AbstractRequestHandler):
         try:
             # create list of values
             intent_payload = [
-                slot_values["location"]["resolved"].replace(" ", "-")
+                slot_values["location"]["resolved"]
             ]
             # log payload for ec2 create process
             #logger.info('\n'.join(map(str, ec2_instance_payload)))
-            #success_code, msg = callAPI(apikey, intent_payload)
+            #success_code, msg = callapi(apikey, intent_payload)
             #speech = msg
             speech = "Check your Cloudwatch"
+            logger.info(intent_payload)
 
         except Exception as e:
             speech = ("I am really sorry. I am unable to access part of my "
