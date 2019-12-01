@@ -14,7 +14,7 @@ resource "aws_iam_role" "LambdaAlexaAirlyMainFunctionIamRole" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "Service": ["lambda.amazon.com"]
+        "Service": ["lambda.amazonaws.com"]
       },
       "Effect": "Allow",
       "Sid": ""
@@ -88,10 +88,10 @@ resource "aws_iam_role_policy_attachment" "IamRolePolicyAttachement" {
   policy_arn = "${aws_iam_policy.LambdaAlexaAirlyMainFunctionIamPolicy.arn}"
 }
 
-resource "aws_lambda_permission" "Allow_Alexa_Skill" {
-    statement_id   = "AllowExecutionByAlexaSkill"
-    action         = "lambda:InvokeFunction"
-    function_name  = "AlexaAirlyMainFunction"
-    principal      = "alexa-appkit.amazon.com"
-    qualifier      = "ALEXASKILLID"
-}
+# resource "aws_lambda_permission" "AllowAlexaSkill" {
+#     statement_id   = "AllowExecutionByAlexaSkill"
+#     action         = "lambda:InvokeFunction"
+#     function_name  = "AlexaAirlyMainFunction"
+#     principal      = "alexa-appkit.amazon.com"
+#     qualifier      = "ALEXASKILLID"
+# }
