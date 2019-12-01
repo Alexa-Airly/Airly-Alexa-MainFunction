@@ -83,7 +83,11 @@ jobs:
         - cd artifact/scripts
         - chmod +x *.sh
         - ./env_prep.sh
+        - cd ../..
         - echo "Sent artifact to S3"
+        - ls -al
+        - ls -al artifact
+        - ls -al artifact/package
       deploy:
         - provider: s3
           bucket: "${artifact_bucket}"
