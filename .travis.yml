@@ -84,6 +84,7 @@ jobs:
         - chmod +x *.sh
         - ./env_prep.sh
         - cd ../..
+        - unzip -l artifact/package/AirlyAlexaMainFunction.zip
         - echo "Send artifact to S3"
       deploy:
         - provider: s3
