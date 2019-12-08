@@ -76,6 +76,7 @@ jobs:
     - stage: Deploy
       script:
         - sed -i -e "s/ACCOUNTNUMBER/${account_number}/g" Alexa-Airly-Main-Function.yml
+        - sed -i -e "s/AIRLYAPIKEY/${airly_apikey}/g" Alexa-Airly-Main-Function.yml
       deploy:
         provider: Cloudformation
         edge: true # use DPLv2
