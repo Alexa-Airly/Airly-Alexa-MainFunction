@@ -56,10 +56,10 @@ Resources:
                 Action:
                   - logs:CreateLogGroup
                 Resource:
-                  - arn:aws:logs:terraform_region:ACCOUNTNUMBER:*
+                  - arn:aws:logs:eu-west-1:ACCOUNTNUMBER:*
               - 
                 Effect: Allow
                 Action:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: arn:aws:logs:terraform_region:ACCOUNTNUMBER:log-group:/aws/lambda/*
+                Resource: arn:aws:logs:eu-west-1:ACCOUNTNUMBER:log-group:/aws/lambda/*
