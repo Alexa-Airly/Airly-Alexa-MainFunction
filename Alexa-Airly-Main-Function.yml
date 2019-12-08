@@ -50,8 +50,7 @@ Resources:
                 Action:
                   - cloudwatch:GetMetricStatistics
                   - cloudwatch:ListMetrics
-                Resource:
-                  - "*"
+                Resource: '*'
               -
                 Effect: Allow
                 Action:
@@ -62,5 +61,4 @@ Resources:
                 Action:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: 
-                  - arn:aws:logs:terraform_region:ACCOUNTNUMBER:log-group:/aws/lambda/*
+                Resource: arn:aws:logs:terraform_region:ACCOUNTNUMBER:log-group:/aws/lambda/*
