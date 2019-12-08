@@ -70,7 +70,7 @@ Resources:
       FunctionName: Alexa-Airly-Main-Function
       Description: Alexa Airly Main Function
       Code:
-        S3Bucket: !ImportValue Alexa-Airly-Infrastructure-ArtifactsBucketArn
+        S3Bucket: !ImportValue Alexa-Airly-Infrastructure-ArtifactsBucket
         S3Key: AirlyAlexaMainFunction.zip
       Runtime: python3.6
       Handler: handler
