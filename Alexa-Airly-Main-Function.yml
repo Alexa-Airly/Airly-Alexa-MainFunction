@@ -65,23 +65,18 @@ Resources:
                 Resource: arn:aws:logs:eu-west-1:ACCOUNTNUMBER:log-group:/aws/lambda/*
 
   MainFunctionLambda:
-    Type: AWS::Lambda:Function
+    Type: AWS::Lambda::Function
     Properties:
       FunctionName: Alexa-Airly-Main-Function
       Description: Alexa Airly Main Function
       Code:
-        S3Bucket: 
-          -
-            !Join
-              - ''
-              - - 'arn:aws:s3:::'
-                - !ImportValue Alexa-Airly-Infrastructure-ArtifactsBucket
+        S3Bucket: !ImportValue Alexa-Airly-Infrastructure-ArtifactsBucketArn
         S3Key: AirlyAlexaMainFunction.zip
       Runtime: python3.6
       Handler: handler
       MemorySize: 128
       Timeout: 10
-      Role: !Ref AlexaAirlyMainFunctionRole
+      Role: !GetAtt AlexaAirlyMainFunctionRole.Arn
       Tags:
         - 
           Key: Name
