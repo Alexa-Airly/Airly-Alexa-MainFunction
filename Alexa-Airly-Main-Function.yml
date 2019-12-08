@@ -77,6 +77,10 @@ Resources:
       MemorySize: 128
       Timeout: 10
       Role: !GetAtt AlexaAirlyMainFunctionRole.Arn
+      Environment:
+        Variables:
+          APIKEY: 'AIRLYAPIKEY'
+          MAXRESULTS: '1'
       Tags:
         - 
           Key: Name
