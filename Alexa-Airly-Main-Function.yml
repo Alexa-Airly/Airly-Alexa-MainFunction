@@ -73,7 +73,7 @@ Resources:
         S3Bucket: !ImportValue Alexa-Airly-Infrastructure-ArtifactsBucket
         S3Key: AirlyAlexaMainFunction.zip
       Runtime: python3.6
-      Handler: Alexa-Airly-Main-Function:handler
+      Handler: AlexaAirlyMainFunction:handler
       MemorySize: 128
       Timeout: 10
       Role: !GetAtt AlexaAirlyMainFunctionRole.Arn
