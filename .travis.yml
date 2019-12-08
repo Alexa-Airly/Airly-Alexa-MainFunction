@@ -2,7 +2,6 @@ os: linux
 language: shell
 
 stages:
-  # - name: Terraform run
   - name: Perform tests
   - name: Prepare artifact
   - name: Deploy
@@ -22,32 +21,6 @@ install:
 
 jobs:
   include:
-    # - stage: Terraform run
-    #   env:
-    #     - TF_INPUT=false # No interraction
-    #   script:
-    #     - cd provision
-    #     - echo "Feeding main.tf with variables."
-    #     - sed -i -e "s/ALEXASKILLID/${alexa_skill_id}/g" main.tf_template
-    #     - mv main.tf_template main.tf
-    #     - echo "Feeding terraform.tf with variables."
-    #     - sed -i -e "s/STATEBUCKETNAME/${terraform_bucket}/g" terraform.tf_template
-    #     - sed -i -e "s/TABLENAME/${terraform_table}/g" terraform.tf_template
-    #     - sed -i -e "s/REGION/${terraform_region}/g" terraform.tf_template
-    #     - mv terraform.tf_template terraform.tf
-    #     - echo "Feeding terraform.tfvars with variables."
-    #     - sed -i -e "s/REGION/${terraform_region}/g" terraform.tfvars_template
-    #     - sed -i -e "s/TABLENAME/${terraform_table}/g" terraform.tfvars_template
-    #     - sed -i -e "s/STATEBUCKETNAME/${terraform_bucket}/g" terraform.tfvars_template
-    #     - sed -i -e "s/ARTIFACTBUCKETNAME/${artifact_bucket}/g" terraform.tfvars_template
-    #     - sed -i -e "s/ENVIRONMENT/${terraform_environment}/g" terraform.tfvars_template
-    #     - sed -i -e "s/CONTEXTTABLE/${dynamodb_context}/g" terraform.tfvars_template
-    #     - mv terraform.tfvars_template terraform.tfvars
-    #     - terraform init
-    #     - terraform validate
-    #     - chmod +x execute.sh
-    #     - ./execute.sh
-
     - stage: Perform tests
       script:
         - echo "Check for commit ${TRAVIS_COMMIT} and tag ${TRAVIS_TAG} from branch ${TRAVIS_BRANCH}."
@@ -101,6 +74,9 @@ jobs:
           skip_cleanup: true
 
     - stage: Deploy
+      script:
+        - sed -i -e "s/ACCOUNTNUMBER/${account_number}/g" Alexa-Airly-Main-Function.yml
+      deploy:
         provider: Cloudformation
         edge: true # use DPLv2
         access_key_id: ${AWS_ACCESS_KEY_ID}
@@ -111,6 +87,8 @@ jobs:
         region: ${terraform_region}
         wait: true
         promote: true
+
+
         # - provider: lambda
         #   funtion_name: "Alexa-Airly-Main-Function"
         #   region: "${terraform_region}"
