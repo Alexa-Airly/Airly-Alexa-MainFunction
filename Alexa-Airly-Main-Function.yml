@@ -75,7 +75,7 @@ Resources:
             !Join
               - ''
               - - 'arn:aws:s3:::'
-              - !ImportValue Alexa-Airly-Infrastructure-ArtifactsBucket
+                - !ImportValue Alexa-Airly-Infrastructure-ArtifactsBucket
         S3Key: AirlyAlexaMainFunction.zip
       Runtime: python3.6
       Handler: handler
