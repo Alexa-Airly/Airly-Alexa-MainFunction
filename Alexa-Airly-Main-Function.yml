@@ -67,7 +67,7 @@ Resources:
   MainFunctionLambda:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: Alexa-Airly-Main-Function
+      #FunctionName: AirlyAlexaMainFunction
       Description: Alexa Airly Main Function
       Code:
         S3Bucket: !ImportValue Alexa-Airly-Infrastructure-ArtifactsBucket
