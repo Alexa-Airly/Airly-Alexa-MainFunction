@@ -63,3 +63,32 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: arn:aws:logs:eu-west-1:ACCOUNTNUMBER:log-group:/aws/lambda/*
+
+  MainFunctionLambda:
+    Type: AWS::Lambda:Function
+    Properties:
+      FunctionName: Alexa-Airly-Main-Function
+      Description: Alexa Airly Main Function
+      Code:
+        S3Bucket: 
+          -
+            !Join
+              - ''
+              - - 'arn:aws:s3:::'
+              - !ImportValue Alexa-Airly-Infrastructure-ArtifactsBucket
+        S3Key: AirlyAlexaMainFunction.zip
+      Runtime: python3.6
+      Handler: handler
+      MemorySize: 128
+      Timeout: 10
+      Role: !Ref AlexaAirlyMainFunctionRole
+      Tags:
+        - 
+          Key: Name
+          Value: Alexa-Airly-Main-Function
+        -
+          Key: Project
+          Value: Alexa-Airly-Status
+        -
+          Key: Purpose
+          Value: Alexa Airly Main Function
