@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Main function for Alexa-Airly
+
+Resources:
+  AlexaAirlyMainFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: IAM role for Main Alexa-Airly function created by Cloudformation
+      Path: /alexaairly/
+      RoleName: iam-role-alexa-airly-main-function
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: iam-policy-alexa-airly-main-function
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - 
+                Effect: Allow
+                Action: 
+                  - s3:ListBucket
+                  - s3:GetObject
+                Resource: 
+                  -
+                    !Join
+                      - ''
+                      - - 'arn:aws:s3:::'
+                        - !ImportValue Alexa-Airly-Infrastructure-ArtifactsBucket
+              -
+                Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                Resource:
+                  -
+                    !Join
+                      - ''
+                      - - 'arn:aws:dynamodb:eu-west-1:ACCOUNTNUMBER:table/'
+                        - !ImportValue Alexa-Airly-Infrastructure-AirlyTable
+              -
+                Effect: Allow
+                Action:
+                  - cloudwatch:GetMetricStatistics
+                  - cloudwatch:ListMetrics
+                Resource:
+                  - "*"
+              -
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                Resource:
+                  - arn:aws:logs:terraform_region:ACCOUNTNUMBER:*
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: 
+                  - arn:aws:logs:terraform_region:ACCOUNTNUMBER:log-group:/aws/lambda/*

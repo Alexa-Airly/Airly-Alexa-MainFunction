@@ -2,9 +2,10 @@ os: linux
 language: shell
 
 stages:
-  - name: Terraform run
+  # - name: Terraform run
   - name: Perform tests
   - name: Prepare artifact
+  - name: Deploy
 
 services:
   - docker
@@ -21,31 +22,31 @@ install:
 
 jobs:
   include:
-    - stage: Terraform run
-      env:
-        - TF_INPUT=false # No interraction
-      script:
-        - cd provision
-        - echo "Feeding main.tf with variables."
-        - sed -i -e "s/ALEXASKILLID/${alexa_skill_id}/g" main.tf_template
-        - mv main.tf_template main.tf
-        - echo "Feeding terraform.tf with variables."
-        - sed -i -e "s/STATEBUCKETNAME/${terraform_bucket}/g" terraform.tf_template
-        - sed -i -e "s/TABLENAME/${terraform_table}/g" terraform.tf_template
-        - sed -i -e "s/REGION/${terraform_region}/g" terraform.tf_template
-        - mv terraform.tf_template terraform.tf
-        - echo "Feeding terraform.tfvars with variables."
-        - sed -i -e "s/REGION/${terraform_region}/g" terraform.tfvars_template
-        - sed -i -e "s/TABLENAME/${terraform_table}/g" terraform.tfvars_template
-        - sed -i -e "s/STATEBUCKETNAME/${terraform_bucket}/g" terraform.tfvars_template
-        - sed -i -e "s/ARTIFACTBUCKETNAME/${artifact_bucket}/g" terraform.tfvars_template
-        - sed -i -e "s/ENVIRONMENT/${terraform_environment}/g" terraform.tfvars_template
-        - sed -i -e "s/CONTEXTTABLE/${dynamodb_context}/g" terraform.tfvars_template
-        - mv terraform.tfvars_template terraform.tfvars
-        - terraform init
-        - terraform validate
-        - chmod +x execute.sh
-        - ./execute.sh
+    # - stage: Terraform run
+    #   env:
+    #     - TF_INPUT=false # No interraction
+    #   script:
+    #     - cd provision
+    #     - echo "Feeding main.tf with variables."
+    #     - sed -i -e "s/ALEXASKILLID/${alexa_skill_id}/g" main.tf_template
+    #     - mv main.tf_template main.tf
+    #     - echo "Feeding terraform.tf with variables."
+    #     - sed -i -e "s/STATEBUCKETNAME/${terraform_bucket}/g" terraform.tf_template
+    #     - sed -i -e "s/TABLENAME/${terraform_table}/g" terraform.tf_template
+    #     - sed -i -e "s/REGION/${terraform_region}/g" terraform.tf_template
+    #     - mv terraform.tf_template terraform.tf
+    #     - echo "Feeding terraform.tfvars with variables."
+    #     - sed -i -e "s/REGION/${terraform_region}/g" terraform.tfvars_template
+    #     - sed -i -e "s/TABLENAME/${terraform_table}/g" terraform.tfvars_template
+    #     - sed -i -e "s/STATEBUCKETNAME/${terraform_bucket}/g" terraform.tfvars_template
+    #     - sed -i -e "s/ARTIFACTBUCKETNAME/${artifact_bucket}/g" terraform.tfvars_template
+    #     - sed -i -e "s/ENVIRONMENT/${terraform_environment}/g" terraform.tfvars_template
+    #     - sed -i -e "s/CONTEXTTABLE/${dynamodb_context}/g" terraform.tfvars_template
+    #     - mv terraform.tfvars_template terraform.tfvars
+    #     - terraform init
+    #     - terraform validate
+    #     - chmod +x execute.sh
+    #     - ./execute.sh
 
     - stage: Perform tests
       script:
@@ -73,6 +74,14 @@ jobs:
         - export PATH=$(dirname $(which sonar-scanner)):$PATH
         - sonar-scanner
 
+    - stage: Perform tests
+      script:
+        - echo "Check for commit ${TRAVIS_COMMIT} and tag ${TRAVIS_TAG} from branch ${TRAVIS_BRANCH}."
+        - echo "This is build number ${TRAVIS_BUILD_NUMBER}, for ${TRAVIS_REPO_SLUG}."
+        - sed -i -e "s/ACCOUNTNUMBER/${account_number}/g" Alexa-Airly-Main-Function.yml
+        - docker pull almerhor/cfnlint:latest
+        - docker run --rm -v $(pwd)/:/lintfiles almerhor/cfnlint -t Alexa-Airly-Main-Function.yml
+
     - stage: Prepare artifact
       os: linux
       language: python
@@ -84,24 +93,35 @@ jobs:
         - chmod +x *.sh
         - ./env_prep.sh
         - cd ../..
-        - unzip -l artifact/package/AirlyAlexaMainFunction.zip
         - echo "Send artifact to S3"
       deploy:
         - provider: s3
           bucket: "${artifact_bucket}"
           local_dir: artifact/package
           skip_cleanup: true
-        - provider: lambda
-          funtion_name: "Alexa-Airly-Main-Function"
-          region: "${terraform_region}"
-          role: "arn:aws:iam::${account_number}:role/alexaairly/LambdaAlexaAirlyMainFunctionIamRole"
-          runtime: "python3.6"
-          module_name: "AirlyAlexaMainFunction"
-          handler_name: "handler"
-          description: "Alexa Airly - Main Function"
-          memory_size: 128
-          timeout: 5
-          zip: artifact/package/AirlyAlexaMainFunction.zip
-          environment: 
-            - LAMBDA_APIKEY="${airly_apikey}"
-            - LAMBDA_MAXRESULTS=1
+
+    - stage: Deploy
+        provider: Cloudformation
+        edge: true # use DPLv2
+        access_key_id: ${AWS_ACCESS_KEY_ID}
+        secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+        capabilities: CAPABILITY_NAMED_IAM
+        template: Alexa-Airly-Main-Function.yml
+        stack_name: Alexa-Airly-Main-Function
+        region: ${terraform_region}
+        wait: true
+        promote: true
+        # - provider: lambda
+        #   funtion_name: "Alexa-Airly-Main-Function"
+        #   region: "${terraform_region}"
+        #   role: "arn:aws:iam::${account_number}:role/alexaairly/LambdaAlexaAirlyMainFunctionIamRole"
+        #   runtime: "python3.6"
+        #   module_name: "AirlyAlexaMainFunction"
+        #   handler_name: "handler"
+        #   description: "Alexa Airly - Main Function"
+        #   memory_size: 128
+        #   timeout: 5
+        #   zip: artifact/package/AirlyAlexaMainFunction.zip
+        #   environment: 
+        #     - LAMBDA_APIKEY="${airly_apikey}"
+        #     - LAMBDA_MAXRESULTS=1
